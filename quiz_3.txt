@@ -1,0 +1,30 @@
+1. HTML, CSS and Javascript are all frontend languages.  HTML is the markup language to create websites. It's like the skeleton for a webpage. CSS is used to style the markup language for websites. JavaScript is a programming language that can be used to make websites interactive through the browser without having to use a server.
+
+2. HTTP request major parts: verb or method, url and Parameters
+
+3. Major parts of HTTP response: status code, headers and message body
+
+4. Use a form. 
+<form method ='post'>
+  <input type='text' username='bob'/>
+  <input type='submit' class='btn'/>
+</form>
+Change the method to 'get' for a GET request.
+
+5. Web developers need to understand that they must recreate the state of an application for the user everytime a response is requested.
+
+6. Browsers combine and render HTML and CSS.  They also get input from the user to provide for any JavaScript code that's needed for the website to function.  It's possible to use other applications to access the internet e.g. MS Paint.
+
+7. MVC stands for Model View Controller.  It's a software pattern for user interfaces.  The model is the information.  The View is a visual representation of the model.  The Controller is the link between the user and the system.  It makes developing applications easier by separating internal logic from the view that is presented to users.
+
+Sinatra
+
+1. Requests are processed by the routes in a ruby file.
+
+2. Rendering renders the HTML from a GET or POST request. Redirecting redirects to a new URL with a GET request.
+
+3. By using <% %> or <%= %>
+
+4. When the routes in the ruby file point to the template.
+
+5. Instance variables are used only for one request.
