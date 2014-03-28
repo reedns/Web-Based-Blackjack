@@ -13,10 +13,9 @@ helpers do
     score = 0
     values.each do |value|
       if value == 'Ace'
-        if score < 11
-          score += 11
-        else
-          score += 1
+        score += 11
+        if score > 21
+          score -= 10
         end
       elsif value.to_i == 0
         score += 10
@@ -38,25 +37,38 @@ helpers do
     value = card[1][1]
     "<img src='/images/cards/#{suit.downcase}_#{value.downcase}.jpg' class='card_img'>"
   end
-end
 
+  def win(msg)
+    session[:money] += session[:bet]
+    @win = "<strong>#{session[:player_name]} won!</strong> #{msg}. #{session[:player_name]} now has <strong>$#{session[:money]}</strong>"
+  end
+
+  def lose(msg)
+    session[:money] -= session[:bet]
+    @lose = "<strong>#{session[:player_name]} lost.</strong> #{msg}. #{session[:player_name]} now has <strong>$#{session[:money]}</strong>"
+  end
+
+  def push(msg)
+    @push ="<strong>It's a push.</strong> #{msg}. #{session[:player_name]} still has <strong>$#{session[:money]}</strong>"
+  end
+end
 
 before do
   @show_buttons = true
   @dealer_turn = false
   @play_again = false
-  #@hide_dealer_hand = true
 end
 
 get '/' do
   if session[:player_name]
-    redirect '/game'
+    redirect '/bet'
   else
     redirect '/set_name'
   end
 end
 
 get '/set_name' do
+  session[:money] = 500
   erb :set_name
 end
 
@@ -67,6 +79,29 @@ post '/set_name' do
   end
 
   session[:player_name] = params[:player_name]
+  redirect '/bet'
+end
+
+get '/bet' do
+  session[:bet] = nil
+  if session[:money] == 0
+    redirect '/game/end'
+  else
+    erb :bet
+  end
+end
+
+post '/bet' do
+  params[:bet] = params[:bet].to_i
+  if params[:bet] == 0
+    @error = "Must make a bet."
+    halt erb(:bet)
+  elsif params[:bet] > session[:money]
+    @error = "Not enough money to bet that much."
+    halt erb(:bet)
+  end
+  
+  session[:bet] = params[:bet]
   redirect '/game'
 end
 
@@ -101,11 +136,11 @@ get '/game/blackjack' do
   player_score = calculate(session[:player_cards])
 
   if dealer_score == BLACKJACK
-    @error = "The dealer got blackjack"
+    lose("The dealer got blackjack.")
   elsif player_score == BLACKJACK
-    @success = "You got blackjack!"
+    win("You got blackjack!")
   elsif dealer_score == BLACKJACK && player_score == BLACKJACK
-    @error = "Push"
+    push("You got blackjack and dealer got blackjack.")
   end
 
   erb :game
@@ -114,45 +149,40 @@ end
 post '/game/player/hit' do
   session[:player_cards] << session[:deck].pop
   if calculate(session[:player_cards]) > BLACKJACK
-    @error = "Oh no! You busted."
-    @show_buttons = false
+    lose("#{session[:player_name]} busted with a score of #{calculate(session[:player_cards])}.")
     @play_again = true
+    @show_buttons = false
     session[:turn] = "dealer"
   end
-  erb :game
+  erb :game, layout: false
 end
 
 post '/game/player/stay' do
   @success = "You chose to stay."
-  redirect '/game/dealer/turn'
+  redirect '/game/dealer'
 end
 
-get '/game/dealer/turn' do
+get '/game/dealer' do
   session[:turn] = "dealer"
+  @show_buttons = false
   dealer_score = calculate(session[:dealer_cards])
   player_score = calculate(session[:player_cards])
-
-  if dealer_score < MINIMUM_HIT || dealer_score < player_score  
+  
+  if dealer_score > BLACKJACK
+    win("the dealer busted with a score of #{dealer_score}!")
+    @play_again = true
+  elsif dealer_score < MINIMUM_HIT || dealer_score < player_score  
     @dealer_turn = true
   else
     redirect '/game/compare'
   end
 
-  erb :game
+  erb :game, layout: false
 end
 
 post '/game/dealer/hit' do
-  @show_buttons = false
-
   session[:dealer_cards] << session[:deck].pop
-  if calculate(session[:dealer_cards]) > BLACKJACK
-    @success = "Dealer busted! You win!"
-    @play_again = true
-  else
-    redirect '/game/dealer/turn'
-  end
-
-  erb :game
+  redirect '/game/dealer'
 end
 
 get '/game/compare' do
@@ -162,21 +192,23 @@ get '/game/compare' do
   player_score = calculate(session[:player_cards])
 
   if player_score > dealer_score
-    @success = "Congratulations, #{session[:player_name]}! You won!"
+    win("#{session[:player_name]} had #{player_score} and the dealer had #{dealer_score}")
   elsif player_score < dealer_score
-    @error = "I'm sorry #{session[:player_name]}. The dealer won."
+    lose("#{session[:player_name]} had #{player_score} and the dealer had #{dealer_score}")
   else
-    @success = "It's a push..."
+    push("#{session[:player_name]} had #{player_score} and the dealer had #{dealer_score}")
   end
 
-  erb :game
+  erb :game, layout: false
 end
 
 get '/game/end' do
-  erb :end
+  if session[:money] == 0
+    erb :broke
+  else
+    erb :end
+  end
 end
-
-
 
 
 

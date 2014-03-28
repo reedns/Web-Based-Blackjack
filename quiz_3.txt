@@ -1,4 +1,4 @@
-1. HTML, CSS and Javascript are all frontend languages.  HTML is the markup language to create websites. It's like the skeleton for a webpage. CSS is used to style the markup language for websites. JavaScript is a programming language that can be used to make websites interactive through the browser without having to use a server.
+1. HTML, CSS and Javascript are all frontend languages.  HTML is the markup language used to create websites. It's like the skeleton for a webpage. CSS is used to style the markup language for websites. JavaScript is a programming language that can be used to make websites interactive through the browser without having to use a server.
 
 2. HTTP request major parts: verb or method, url and Parameters
 
@@ -23,8 +23,8 @@ Sinatra
 
 2. Rendering renders the HTML from a GET or POST request. Redirecting redirects to a new URL with a GET request.
 
-3. By using <% %> or <%= %>
+3. By using <%= %> with a helper method, session variable, if statements etc.
 
-4. When the routes in the ruby file point to the template.
+4. With every request.
 
 5. Instance variables are used only for one request.
