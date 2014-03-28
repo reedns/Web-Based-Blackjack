@@ -12,16 +12,18 @@ helpers do
 
     score = 0
     values.each do |value|
-      if value == 'Ace'
+      if value == "Ace"
         score += 11
-        if score > 21
-          score -= 10
-        end
       elsif value.to_i == 0
         score += 10
       else
         score += value.to_i
       end  
+    end
+    if score > 21 && values.include?("Ace")
+      values.count("Ace").times do
+        score -= 10
+      end
     end
     score    
   end
@@ -57,6 +59,7 @@ before do
   @show_buttons = true
   @dealer_turn = false
   @play_again = false
+  @blackjack_check = false
 end
 
 get '/' do
@@ -121,26 +124,18 @@ get '/game' do
 
   dealer_score = calculate(session[:dealer_cards])
   player_score = calculate(session[:player_cards])
+
   if player_score == BLACKJACK || dealer_score == BLACKJACK
-    redirect '/game/blackjack'
-  end
-    
-  erb :game
-end
-
-get '/game/blackjack' do
-  session[:turn] = "dealer"
-  @show_buttons = false
-  @play_again = true
-  dealer_score = calculate(session[:dealer_cards])
-  player_score = calculate(session[:player_cards])
-
-  if dealer_score == BLACKJACK
-    lose("The dealer got blackjack.")
-  elsif player_score == BLACKJACK
-    win("You got blackjack!")
-  elsif dealer_score == BLACKJACK && player_score == BLACKJACK
-    push("You got blackjack and dealer got blackjack.")
+    session[:turn] = "dealer"
+    @show_buttons = false
+    @play_again = true
+    if player_score == BLACKJACK
+      win("You got blackjack!")
+    elsif dealer_score == BLACKJACK
+      lose("The dealer got blackjack.")
+    elsif dealer_score == BLACKJACK && player_score == BLACKJACK
+      push("You got blackjack and dealer got blackjack.")
+    end
   end
 
   erb :game
@@ -171,7 +166,7 @@ get '/game/dealer' do
   if dealer_score > BLACKJACK
     win("the dealer busted with a score of #{dealer_score}!")
     @play_again = true
-  elsif dealer_score < MINIMUM_HIT || dealer_score < player_score  
+  elsif dealer_score < MINIMUM_HIT
     @dealer_turn = true
   else
     redirect '/game/compare'

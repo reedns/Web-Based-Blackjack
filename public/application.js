@@ -2,6 +2,7 @@ $(document).ready(function() {
   player_hits();
   player_stays();
   dealer_hits();
+  blackjack_check();
 });
 
 function player_hits() {
@@ -42,3 +43,21 @@ function dealer_hits() {
     return false;
   });
 }
+
+function blackjack_check() {
+  $(document).on("click", "form#blackjack_check", function() {
+    $.ajax({
+      type: "POST",
+      url: "/game/blackjack_check"
+    }).done(function(msg) {
+      $("#game").replaceWith(msg)
+    });
+
+    return false;
+  });
+}
+
+
+
+
+
