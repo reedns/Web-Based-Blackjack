@@ -7,13 +7,13 @@ form#stay {
   float: left;
 }
 
-img.card_img {
+img.img-rounded {
   margin: 0px 5px 5px 0px;
 }
 
 form#yes_button {
   float: left;
-  margin: 0px 10px 0px 0px;
+  margin:0px 10px 0px 0px;
 }
 
 form#no_button {

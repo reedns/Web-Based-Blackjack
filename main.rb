@@ -31,13 +31,13 @@ helpers do
   def show_image(card)
     suit = card[0]
     value = card[1]
-    "<img src='/images/cards/#{suit.downcase}_#{value.downcase}.jpg' class='card_img'>"
+    "<img src='/images/cards/#{suit.downcase}_#{value.downcase}.jpg' class='img-rounded'>"
   end
 
   def hide_card(card)
     suit = card[1][0]
     value = card[1][1]
-    "<img src='/images/cards/#{suit.downcase}_#{value.downcase}.jpg' class='card_img'>"
+    "<img src='/images/cards/#{suit.downcase}_#{value.downcase}.jpg' class='img-rounded'>"
   end
 
   def win(msg)

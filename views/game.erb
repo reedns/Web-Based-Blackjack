@@ -7,7 +7,7 @@
     <div class="alert alert-success"><%=@win%></div>
   <% end %>
   <%if @push %>
-    <div class="alert alert-primary"><%=@push%></div>
+    <div class="alert alert-info"><%=@push%></div>
   <% end %> 
 
   <p>
@@ -34,7 +34,7 @@
     <h4>Dealer Cards:</h4>
 
     <% if session[:turn] != "dealer" %>
-      <img src='/images/cards/cover.jpg' class="card_img">
+      <img src='/images/cards/cover.jpg' class="img-rounded">
       <%= hide_card(session[:dealer_cards]) %>
     <% else %>
       <% session[:dealer_cards].each do |card| %>
