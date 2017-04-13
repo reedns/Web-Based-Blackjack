@@ -1,4 +1,4 @@
-##Blackjack with Sinatra
+## Blackjack with Sinatra
 
 This is a simple blackjack game that was created using Ruby and Sinatra.
 
